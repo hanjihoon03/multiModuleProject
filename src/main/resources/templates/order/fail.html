@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+    <div style="text-align: center; margin-top: 50px;">
+        <h2>구매를 실패 했습니다.</h2>
+        <h2>구매 목록이 있는지 서버의 상태가 잘못 되었는지 확인하세요.</h2>
+        <a href="/" class="btn btn-primary">홈으로</a>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"/>
+</div> <!-- /container -->
+</body>
+</html>

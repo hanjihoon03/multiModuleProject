@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+    <div>
+        <table class="table table-striped">
+            <thead> <tr>
+                <th>Number</th> <th>상품</th> <th>상품명</th> <th>가격</th> <th>재고수량</th><th>브랜드</th> <th>수량</th><th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="electronicsAndFileDto, status : ${allElectronics}">
+                <!-- 첨부 파일 링크 -->
+                <td th:text="${status.index + 1}"></td>
+                <td>
+
+                        <img th:if="${electronicsAndFileDto.uploadFileName != null}"
+                             th:src="@{/images/{filename}(filename=${electronicsAndFileDto.storeFileName})}"
+                             width="50" height="50"/>
+
+                </td>
+                <td th:text="${electronicsAndFileDto.name}"></td>
+                <td th:text="${electronicsAndFileDto.price}"></td>
+                <td th:text="${electronicsAndFileDto.quantity}"></td>
+                <td th:text="${electronicsAndFileDto.brand}"></td>
+                <td>
+                    <form th:action="@{/addCart}" method="post">
+                        <input type="hidden" name="itemId" th:value="${electronicsAndFileDto.id}">
+                        <input type="number" name="quantity" value="1" min="1" required>
+                        <button class="btn btn-dark btn-lg" type="submit">
+                            장바구니 추가
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${!allElectronics.isEmpty()}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${!allElectronics.hasPrevious} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{|?page=${allElectronics.number-1}|}">
+                    <span>이전</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(0, allElectronics.totalPages-1)}"
+                th:if="${page >= allElectronics.number-5 and page <= allElectronics.number+5}"
+                th:classappend="${page == allElectronics.number} ? 'active'"
+                class="page-item">
+                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
+            </li>
+            <li class="page-item" th:classappend="${!allElectronics.hasNext} ? 'disabled'">
+                <a class="page-link" th:href="@{|?page=${allElectronics.number+1}|}">
+                    <span>다음</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"/>
+</div> <!-- /container -->
+</body>
+</html>

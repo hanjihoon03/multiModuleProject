@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+    <div>
+        <table class="table table-striped">
+            <thead> <tr>
+                <th>장바구니</th> <th>상품</th> <th>상품명</th> <th>가격</th> <th>수량</th> <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Clothes -->
+            <div th:if="${not #lists.isEmpty(items)}">
+                <tr th:each="itemDto, status : ${items}">
+                        <!-- 첨부 파일 링크 -->
+                        <td th:text="${status.index + 1}"></td>
+                        <td>
+                            <a th:href="@{/attach/{id}(id=${itemDto.id})}">
+                                <img th:if="${itemDto.uploadFileName != null}"
+                                     th:src="@{/images/{filename}(filename=${itemDto.storeFileName})}"
+                                     width="50" height="50"/>
+                            </a>
+                        <td th:text="${itemDto.name}"></td>
+                        <td th:text="${itemDto.price}"></td>
+                        <td th:text="${itemDto.orderQuantity}"></td>
+                    <td>
+                        <a th:href="@{'/purchase/delete/' + ${itemDto.id}}" class="btn btn-danger">삭제</a>
+                    </td>
+
+                    </th:block>
+                </tr>
+            </div>
+
+
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(items)}">
+        <div>
+            <h4>할인 가: <span th:text="${discount} + '원'"></span></h4>
+            <h4>총 가격: <span th:text="${totalPrice} + '원'"></span></h4>
+        </div>
+    </div>
+
+        <div class="buy-button-container">
+        <a th:href="@{/buy(totalPrice=${totalPrice})}" class="btn btn-dark btn-lg">구매</a>
+    </div>
+
+
+    <div th:replace="~{fragments/footer :: footer}"/>
+</div> <!-- /container -->
+</body>
+</html>

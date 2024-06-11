@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+<div class="container">
+
+
+    <ul class="nav nav-pills pull-right">
+        <li><a href="/adminPage">Home</a></li>
+    </ul>
+    <nav class="navbar navbar-expand-md bg-white sticky-top border-bottom" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand d-md-none text-dark" href="#">
+                <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
+                Aperture
+            </a>
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title text-dark" id="offcanvasLabel">Aperture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav flex-grow-1 justify-content-between">
+                        <li class="nav-item"><a class="nav-link text-dark" href="#">
+                            <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
+                        </a></li>
+                        <li style="padding-right: 50px;"><a href="/adminPage" class="nav-link px-2 link-secondary text-dark">Home</a></li>
+                        <li style="padding-right: 50px;"><a th:href="@{/clothesList}" class="nav-link px-2 text-dark">clothes</a></li>
+                        <li style="padding-right: 50px;"><a th:href="@{/bookList}" class="nav-link px-2 text-dark">book</a></li>
+                        <li style="padding-right: 50px;"><a th:href="@{/electronicsList}" class="nav-link px-2 text-dark">electronics</a></li>
+                        <li style="padding-right: 50px;"><a th:href="@{/foodList}" class="nav-link px-2 text-dark">food</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div>
+        <table class="table table-striped">
+            <thead> <tr>
+                <th>Number</th> <th>상품</th> <th>상품명</th> <th>가격</th> <th>재고수량</th><th>브랜드</th> <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="foodAndFileDto, status : ${allFood}">
+                <!-- 첨부 파일 링크 -->
+                <td th:text="${status.index + 1}"></td>
+                <td>
+                    <a th:href="@{/attach/{id}(id=${foodAndFileDto.id})}">
+                        <img th:if="${foodAndFileDto.uploadFileName != null}"
+                             th:src="@{/images/{filename}(filename=${foodAndFileDto.storeFileName})}"
+                             width="50" height="50"/>
+                    </a>
+                </td>
+                <td th:text="${foodAndFileDto.name}"></td>
+                <td th:text="${foodAndFileDto.price}"></td>
+                <td th:text="${foodAndFileDto.quantity}"></td>
+                <td th:text="${foodAndFileDto.brand}"></td>
+                <td>
+                    <a href="#" th:href="@{/admin/modifyFood/{id}/edit (id=${foodAndFileDto.id})}" class="btn btn-primary" role="button">수정</a>
+                </td>
+                <td>
+                    <form th:action="@{/deleteItem/{id}(id=${foodAndFileDto.id})}" method="post">
+                        <input type="submit" value="삭제" class="btn btn-danger" role="button"/>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${!allFood.isEmpty()}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${!allFood.hasPrevious} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{|?page=${allFood.number-1}|}">
+                    <span>이전</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(0, allFood.totalPages-1)}"
+                th:if="${page >= allFood.number-5 and page <= allFood.number+5}"
+                th:classappend="${page == allFood.number} ? 'active'"
+                class="page-item">
+                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
+            </li>
+            <li class="page-item" th:classappend="${!allFood.hasNext} ? 'disabled'">
+                <a class="page-link" th:href="@{|?page=${allFood.number+1}|}">
+                    <span>다음</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"/>
+</div> <!-- /container -->
+</body>
+</html>
